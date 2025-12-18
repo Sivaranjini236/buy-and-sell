@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy & Sell Products</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+    }
+    header {
+      background: #2c3e50;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+    .box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .product {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .product button {
+      width: auto;
+      padding: 5px 10px;
+      background: #27ae60;
+    }
+    .cart button {
+      background: #e74c3c;
+    }
+    .total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    @media(max-width: 768px){
+      .container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>🛒 Buy & Sell Products App</header>
+
+<div class="container">
+
+  <!-- SELL SECTION -->
+  <div class="box">
+    <h2>📦 Sell Product</h2>
+    <input type="text" id="pname" placeholder="Product Name" />
+    <input type="number" id="pprice" placeholder="Price" />
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+
+  <!-- BUY SECTION -->
+  <div class="box">
+    <h2>🛍️ Available Products</h2>
+    <div id="productList"></div>
+  </div>
+
+  <!-- CART -->
+  <div class="box cart">
+    <h2>🧾 Cart</h2>
+    <div id="cartList"></div>
+    <div class="total">Total: ₹<span id="total">0</span></div>
+  </div>
+
+</div>
+
+<script>
+  let products = [];
+  let cart = [];
+
+  const productList = document.getElementById("productList");
+  const cartList = document.getElementById("cartList");
+  const totalEl = document.getElementById("total");
+
+  function addProduct() {
+    const name = document.getElementById("pname").value;
+    const price = document.getElementById("pprice").value;
+
+    if (name === "" || price === "") {
+      alert("Enter product name and price");
+      return;
+    }
+
+    products.push({ name, price: Number(price) });
+    document.getElementById("pname").value = "";
+    document.getElementById("pprice").value = "";
+    displayProducts();
+  }
+
+  function displayProducts() {
+    productList.innerHTML = "";
+    products.forEach((p, index) => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `${p.name} - ₹${p.price} <button onclick="buyProduct(${index})">Buy</button>`;
+      productList.appendChild(div);
+    });
+  }
+
+  function buyProduct(index) {
+    cart.push(products[index]);
+    updateCart();
+  }
+
+  function updateCart() {
+    cartList.innerHTML = "";
+    let total = 0;
+    cart.forEach((item, i) => {
+      total += item.price;
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `${item.name} - ₹${item.price} <button onclick="removeItem(${i})">Remove</button>`;
+      cartList.appendChild(div);
+    });
+    totalEl.textContent = total;
+  }
+
+  function removeItem(i) {
+    cart.splice(i, 1);
+    updateCart();
+  }
+</script>
+
+</body>
+</html>
